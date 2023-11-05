@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Document</title>
+</head>
+
+<body class="container">
+    <div class="filtros">
+        <!-- Filtro de operarios por Nombre, Apellido o Legajo -->
+
+        <label for="filtroNombre">Filtrar por Nombre, Apellido o Legajo:</label>
+        <input type="text" id="" onkeyup="filtrarPorOtrosDatos()" placeholder="Escribe aquí...">
+
+        <!-- Nuevo filtro por Número de Taquilla -->
+
+        <label for="filtro">Número de Taquilla:</label>
+        <input type="text" id="filtroTaquilla" onkeyup="filtrarOperariosPorTaquilla()" placeholder="Escribe aquí...">
+    </div>
+
+    <script>
+        /* ELIMINA LOS HIJOS DEL ul CON LO FILTRADO */
+        function borrarFiltros(elementUl) {
+            console.log('borra elementos LI de filtros')
+            while (elementUl.firstChild) {
+                elementUl.removeChild(elementUl.firstChild);
+            }
+        }
+    </script>
+    <button onclick="borrarFiltros(ulOperarios)">Borrar filtros</button>
+
+
+    <ul id="listaOperarios" class="operarios-list"></ul>
+    <ul id="todosLosOperarios" class="ul2"></ul>
+
+    <script>
+        const ulOperarios = document.getElementById('listaOperarios')
+
+        const OPERARIOS = [
+            {
+                Nombre: "Matias",
+                Legajo: 20,
+                Taquilla: 62
+            },
+            {
+                Nombre: "Gabriel",
+                Legajo: 1702,
+                Taquilla: 51
+            },
+            {
+                Nombre: "Soledad",
+                Legajo: 3,
+                Taquilla: 69
+            },
+            {
+                Nombre: "Juan",
+                Legajo: 1,
+                Taquilla: 6
+            }
+
+        ]
+
+        const listaOperariosHtml = OPERARIOS.map(operario => {
+            const liElement = document.createElement("li");
+            liElement.textContent = `Nombre: ${operario.Nombre}, Legajo: ${operario.Legajo}, Taquilla: ${operario.Taquilla}`;
+            liElement.classList.add("operario-item")
+            liElement.id = "operario-item"
+            return liElement;
+        });
+
+        const todosLosOperarios = document.getElementById("todosLosOperarios")
+
+        //NEW FUNCTION
+        function filtrarOperariosPorTaquilla() {
+            const inputFiltro = document.getElementById('filtroTaquilla')
+            const inputValue = inputFiltro.value
+
+            const empleadoEncontrado = OPERARIOS.find(empleado => empleado.Taquilla === parseInt(inputValue));
+
+
+            if (empleadoEncontrado) {
+                ulOperarios.innerHTML = ''
+                console.log("Empleado encontrado:", empleadoEncontrado);
+
+                ulOperarios.innerHTML = `        
+                <li class="operario-item">
+                    <div class="operario-foto">
+                        <img src="fotos/20 Carrizo Matias.jpg" alt="Foto ${empleadoEncontrado.Nombre}">
+                    </div>
+                    <div class="operario-info">
+                        <p><span class="keyword">Nombre:</span> ${empleadoEncontrado.Nombre}</p>
+                        <p><span class="keyword">Número de Taquilla:</span> ${empleadoEncontrado.Taquilla}</p>
+                    </div>
+                </li>`
+            } else {
+                console.log("Empleado no encontrado");
+            }
+        }
+
+        //Funcion para filtrar por nombre-etc
+        function filtrarPorOtrosDatos(){
+            console.log('...')
+        }
+    </script>
+    
+    <!--Lista extra, muestra todos los datos disponibles. Se recorre la lista de elementos para cada objeto
+    y se muestra en listado.  -->
+    <ul id="todosLosOperarios">
+        <script>
+            listaOperariosHtml.forEach(liElement => {
+                todosLosOperarios.appendChild(liElement);
+            });
+        </script>
+    </ul>
+
+    <!-- Pie de página con imagen -->
+    <footer>
+        <img class="footer-image" src="footer-image.jpg" alt="Pie de página">
+    </footer>
+</body>
+
+</html>
