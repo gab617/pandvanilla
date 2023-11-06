@@ -46,3 +46,10 @@
 #listaOperarios span {
     font-weight: bold;
 }
+
+#p-taquilla-filtro{
+    background-color: #ffa500; /* Color de fondo destacado (en este caso, naranja) */
+    color: rgba(0, 0, 0, 0.7); /* Color de texto con transparencia (aquí, negro al 70% de opacidad) */
+    padding: 10px; /* Espaciado alrededor del párrafo para resaltar */
+  
+}

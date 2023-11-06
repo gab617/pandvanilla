@@ -34,8 +34,9 @@
         }
     </script>
 
-    <button class="boton-borrar" onclick="borrarFiltros(ulOperariosFiltrados, imgFiltroTaquilla)">Borrar filtros</button>
-    <div id="taquilla-filtro-container" >
+    <button class="boton-borrar" onclick="borrarFiltros(ulOperariosFiltrados, imgFiltroTaquilla)">Borrar
+        filtros</button>
+    <div id="taquilla-filtro-container">
         <ul id="listaOperarios" class="operarios-list"></ul>
         <!-- <img id="img-legajo" src="" alt=""> -->
     </div>
@@ -260,6 +261,9 @@
                     for (const keyword in operario) {
                         const pElement = document.createElement("p");
                         pElement.innerHTML = `<span class="keyword">${keyword}:</span> ${operario[keyword]}`;
+                        if (keyword === "Taquilla") {
+                            pElement.id = "p-taquilla-filtro"
+                        }
                         divInfo.appendChild(pElement);
                     }
 
@@ -277,19 +281,19 @@
             const inputFiltroValue = inputFiltroDinamico.value
 
             console.log(inputFiltroValue)
-            const empleadosEncontrados = buscarOperario(inputFiltroValue, inputFiltroValue)
+            const empleadosEncontrados = buscarOperario(inputFiltroValue, inputFiltroValue, inputFiltroValue) /* nombre,legajo,apellido */
             try {
                 if (empleadosEncontrados.length > 0) {
                     ulOperariosFiltrados.innerHTML = '' /* Se borra el contenido cuando se encuentra nuevas coincidencias antes de renderizarlos. */
 
-                    empleadosEncontrados.forEach((empleado) => {
+                    empleadosEncontrados.forEach((operario) => {
                         /* Aqui teoricamente se trabajan las coincidencias a partir de los filtrados, de manera secuencial se crean los elementos a mostrarse
                         y son agregados al html correspondiente a la lista que va a mostrar los elementos que estamos buscandome mediante los filtros.
                         tener en cuenta que es una forma muy secuencial de realizar, borrando y agregando nuevamente informacion. Mucha manipulacion del dom
                         se tiene en cuenta que la carga de datos no seria muy grande. Podria optimizarme mucho mas para darle mas rentabilidad. Pero como solucion sigue
                         un fluyo de funcionamiento, filtrado de datos, siempre trabajando sobre la misma lista de operarios y sobre la misma UL, borrando y pintando nuevos
                         datos a medida que hay un evento de teclado. */
-                        console.log(empleado)
+                        console.log(operario)
                         const li = document.createElement("li") /* maquetacion desde creacion de elementos */
                         li.className = "operario-item"
 
@@ -298,7 +302,7 @@
 
                         const img = document.createElement("img")
                         img.src = `https://gab-cozzuol-react.vercel.app/images/about-us/quienes_somos_mercados01.png`
-                        img.alt = `Foto ${empleado.Nombre}`
+                        img.alt = `Foto ${operario.Nombre}`
 
                         divFoto.appendChild(img)
 
@@ -306,15 +310,19 @@
                         divInfo.className = "operario-info"
 
                         const pNombre = document.createElement("p")
-                        pNombre.innerHTML = `<span class="keyword">Nombre:</span> ${empleado.Nombre}`
+                        pNombre.innerHTML = `<span class="keyword">Nombre:</span> ${operario.Nombre}`
+
+                        const apellidoP = document.createElement("p")
+                        apellidoP.innerHTML = `<span class="keyword">Apellido:</span> ${operario.Apellido}`
 
                         const pTaquilla = document.createElement("p")
-                        pTaquilla.innerHTML = `<span class="keyword">Número de Taquilla:</span> ${empleado.Taquilla}`
+                        pTaquilla.innerHTML = `<span class="keyword">Número de Taquilla:</span> ${operario.Taquilla}`
 
                         const pLegajo = document.createElement("p")
-                        pLegajo.innerHTML = `<span class="keyword">Número de Legajo:</span> ${empleado.Legajo}`
+                        pLegajo.innerHTML = `<span class="keyword">Número de Legajo:</span> ${operario.Legajo}`
 
                         divInfo.appendChild(pNombre)
+                        divInfo.appendChild(apellidoP)
                         divInfo.appendChild(pTaquilla)
                         divInfo.appendChild(pLegajo)
 
@@ -337,11 +345,12 @@
         
         Se puede optimizar.
         */
-        function buscarOperario(nombre, legajo) {
+        function buscarOperario(nombre, legajo, apellido) {
             const coincidencias = OPERARIOS.filter(operario => {
                 const nombreCoincide = operario.Nombre.toLowerCase() === nombre.toLowerCase()
                 const legajoCoincide = operario.Legajo === parseInt(legajo)
-                if (nombreCoincide || legajoCoincide) {
+                const apellidoCoincide = operario.Apellido.toLowerCase() === apellido.toLowerCase()
+                if (nombreCoincide || legajoCoincide || apellidoCoincide) {
                     console.log('operario encontrado')
                     return true
                 }
