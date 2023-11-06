@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/ul1.css">
     <link rel="stylesheet" type="text/css" href="/boton-borrar.css">
     <link rel="stylesheet" type="text/css" href="/ul-filtro.css">
+    <link rel="stylesheet" type="text/css" href="/taquilla-filtro.css">
     <title>panda</title>
 </head>
 
@@ -25,16 +26,20 @@
 
     <script>
         /* ELIMINA LOS HIJOS DEL ul CON LO FILTRADO y lo deja vacio.*/
-        function borrarFiltros(elementUl) {
-            console.log('borra elementos LI de filtros')
+        function borrarFiltros(elementUl, imgTaquilla) {
+            console.log('borra elementos LI de filtros e imagen de busqueda de taquilla')
             while (elementUl.firstChild) {
                 elementUl.removeChild(elementUl.firstChild)
             }
         }
     </script>
 
-    <button class="boton-borrar" onclick="borrarFiltros(ulOperarios)">Borrar filtros</button>
-    <ul id="listaOperarios" class="operarios-list"></ul>
+    <button class="boton-borrar" onclick="borrarFiltros(ulOperariosFiltrados, imgFiltroTaquilla)">Borrar filtros</button>
+    <div id="taquilla-filtro-container" >
+        <ul id="listaOperarios" class="operarios-list"></ul>
+        <!-- <img id="img-legajo" src="" alt=""> -->
+    </div>
+
     <ul id="todosLosOperarios" class="ul2"></ul>
 
     <script>
@@ -140,19 +145,23 @@
             }
         ]
 
-        /* Dos listas donde trabajaremos. de las cuales una va a estar mostrando los datos que se van a filtrar mediante los inputs -ulOperarios-
+        /* Dos listas donde trabajaremos. de las cuales una va a estar mostrando los datos que se van a filtrar mediante los inputs -ulOperariosFiltrados-
             y la segunda lista ul -todosLosOperarios- que se va a mostrar por debajo del ul que se va a mostrar cuando haya datos disponibles para renderizar
             lista que se va a ir borrando y actualizando a medida que el evento onkeyup se active, para asi comprobar coincidencias con lo solicitdado y con los datos
             dentro de OPERARIOS.
          */
 
         /* UL para lista de filtrado y UL para lista de todos los opers */
-        const ulOperarios = document.getElementById('listaOperarios')
+        const ulOperariosFiltrados = document.getElementById('listaOperarios')
         const todosLosOperarios = document.getElementById("todosLosOperarios")
 
         /* Inputs de filtrado */
         const inputFiltroDinamico = document.getElementById('filtroDinamico')
         const inputFiltroTaquilla = document.getElementById('filtroTaquilla')
+
+        /*  */
+        const divTaquillaFiltroContainer = document.getElementById("taquilla-filtro-container")
+        const imgFiltroTaquilla = document.getElementById("img-legajo")
 
 
         /* Constante con todos los elementos li dentro de un array, el cual contiene a cada li que va a ir al <ul> referenciado en todosLosOperarios
@@ -212,8 +221,6 @@
             liElement.appendChild(apellidoP)
             liElement.appendChild(legajoP)
             liElement.appendChild(taquillaP)
-
-            // Agregar elementos para campos adicionales
             liElement.appendChild(talleMamelucoP)
             liElement.appendChild(talleZapatosP)
             liElement.appendChild(talleCamperaP)
@@ -230,40 +237,50 @@
 
         /* Implementacion de funcion para filtrar por taquilla y al encontrar coincidencia devuelve un html en forma de string. teoricamente no podrian haber 2 legajos iguales. */
         function filtrarOperariosPorTaquilla() {
-            const inputFiltroValue = inputFiltroTaquilla.value
+            const inputFiltroValue = inputFiltroTaquilla.value;
+            const taquillaValue = parseInt(inputFiltroValue);
 
-            const empleadoEncontrado = OPERARIOS.find(empleado => empleado.Taquilla === parseInt(inputFiltroValue))
+            // Filtrar operarios por taquilla
+            const empleadoTaquilla = OPERARIOS.filter(empleado => empleado.Taquilla === taquillaValue);
 
-            if (empleadoEncontrado) {
-                ulOperarios.innerHTML = ''
-                console.log("Empleado encontrado:", empleadoEncontrado)
+            if (empleadoTaquilla.length > 0) { /* Si hay coincidencia devolvera un solo objeto ya que taquillas son unicas, no se repiten */
+                ulOperariosFiltrados.innerHTML = ''; // Limpiar la lista anterior
 
-                ulOperarios.innerHTML = `        
-                <li class="operario-item">
-                    <div class="operario-foto">
-                        <img src="fotos/20 Carrizo Matias.jpg" alt="Foto ${empleadoEncontrado.Nombre}">
-                    </div>
-                    <div class="operario-info">
-                        <p><span class="keyword">Nombre:</span> ${empleadoEncontrado.Nombre}</p>
-                        <p><span class="keyword">Número de Taquilla:</span> ${empleadoEncontrado.Taquilla}</p>
-                    </div>
-                </li>
-                `
+                empleadoTaquilla.forEach(operario => {
+                    const liElement = document.createElement("li");
+                    liElement.classList.add("operario-item");
+
+
+                    // Crear un div para la información del operario
+                    const divInfo = document.createElement("div");
+                    divInfo.classList.add("operario-info");
+
+
+                    // Iterar a través de las propiedades/keyword del objeto
+                    for (const keyword in operario) {
+                        const pElement = document.createElement("p");
+                        pElement.innerHTML = `<span class="keyword">${keyword}:</span> ${operario[keyword]}`;
+                        divInfo.appendChild(pElement);
+                    }
+
+                    liElement.appendChild(divInfo);
+                    ulOperariosFiltrados.appendChild(liElement);
+                });
+
             } else {
-                console.log("Empleado no encontrado")
+                console.log("No se encontraron empleados");
             }
         }
-
-
         /* Filtrado dinamico para varios campos a vez, referido a un solo input. filtra por string asi como para enteros. */
         function filtrarPorOtrosDatos() {
             const inputFiltroDinamico = document.getElementById('filtroDinamico')
             const inputFiltroValue = inputFiltroDinamico.value
+
             console.log(inputFiltroValue)
             const empleadosEncontrados = buscarOperario(inputFiltroValue, inputFiltroValue)
             try {
                 if (empleadosEncontrados.length > 0) {
-                    ulOperarios.innerHTML = '' /* Se borra el contenido cuando se encuentra nuevas coincidencias antes de renderizarlos. */
+                    ulOperariosFiltrados.innerHTML = '' /* Se borra el contenido cuando se encuentra nuevas coincidencias antes de renderizarlos. */
 
                     empleadosEncontrados.forEach((empleado) => {
                         /* Aqui teoricamente se trabajan las coincidencias a partir de los filtrados, de manera secuencial se crean los elementos a mostrarse
@@ -280,7 +297,7 @@
                         divFoto.className = "operario-foto"
 
                         const img = document.createElement("img")
-                        img.src = `fotos/${empleado.Legajo} ${empleado.Nombre}.jpg`
+                        img.src = `https://gab-cozzuol-react.vercel.app/images/about-us/quienes_somos_mercados01.png`
                         img.alt = `Foto ${empleado.Nombre}`
 
                         divFoto.appendChild(img)
@@ -304,7 +321,7 @@
                         li.appendChild(divFoto)
                         li.appendChild(divInfo)
 
-                        ulOperarios.appendChild(li)
+                        ulOperariosFiltrados.appendChild(li)
                     })
 
                 }
@@ -312,7 +329,6 @@
             catch { console.log('No hay valores para mostrar') }
 
         }
-
         /* Funcion para buscar operario desde nombre a legajo, la logica ultilizada
         seria. se reciben los datos del input, independiente de lo que sea, 
         se filtran los nombres que coincidan con el dato en parametro

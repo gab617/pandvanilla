@@ -1,9 +1,21 @@
+#taquilla-filtro-container{
+    display: flex;
+    width: 100%;
+
+}
+
 /* Estilos para el contenedor de la lista */
 #listaOperarios {
     margin: 0 auto;
-    width: 80%;
+    width: 50%;
     list-style: none;
     padding: 0;
+}
+
+#taquilla-filtro-container #img-legajo{
+    width: 30%;
+    height: 30%;
+    margin: 0 auto;
 }
 
 
@@ -19,13 +31,6 @@
     background-color: #f9f9f9;
 }
 
-/* Estilos para la imagen */
-#listaOperarios .operario-foto img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
 
 /* Estilos para la información del operario */
 #listaOperarios.operario-info {
@@ -41,6 +46,3 @@
 #listaOperarios span {
     font-weight: bold;
 }
-
-
-

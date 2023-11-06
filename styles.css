@@ -61,10 +61,6 @@ input {
     margin: 5px 0;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
 
 
 /* Estilos para el contenedor de filtros */
@@ -133,3 +129,4 @@ ul {
     margin: 0;
     /* Elimina el margen predeterminado del párrafo */
 }
+
