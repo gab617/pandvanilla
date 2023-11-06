@@ -6,40 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <title>Document</title>
+    <title>panda</title>
 </head>
 
 <body class="container">
     <div class="filtros">
         <!-- Filtro de operarios por Nombre, Apellido o Legajo -->
-
         <label for="filtroNombre">Filtrar por Nombre, Apellido o Legajo:</label>
-        <input type="text" id="" onkeyup="filtrarPorOtrosDatos()" placeholder="Escribe aquí...">
+        <input type="text" id="filtroDinamico" onkeyup="filtrarPorOtrosDatos()" placeholder="Escribe aquí...">
 
         <!-- Nuevo filtro por Número de Taquilla -->
-
         <label for="filtro">Número de Taquilla:</label>
         <input type="text" id="filtroTaquilla" onkeyup="filtrarOperariosPorTaquilla()" placeholder="Escribe aquí...">
     </div>
 
     <script>
-        /* ELIMINA LOS HIJOS DEL ul CON LO FILTRADO */
+        /* ELIMINA LOS HIJOS DEL ul CON LO FILTRADO y lo deja vacio.*/
         function borrarFiltros(elementUl) {
             console.log('borra elementos LI de filtros')
             while (elementUl.firstChild) {
-                elementUl.removeChild(elementUl.firstChild);
+                elementUl.removeChild(elementUl.firstChild)
             }
         }
     </script>
+
     <button onclick="borrarFiltros(ulOperarios)">Borrar filtros</button>
-
-
     <ul id="listaOperarios" class="operarios-list"></ul>
     <ul id="todosLosOperarios" class="ul2"></ul>
 
     <script>
+        /* Dos listas donde trabajaremos. de las cuales una va a estar mostrando los datos que se van a filtrar mediante los inputs -ulOperarios-
+            y la segunda lista ul -todosLosOperarios- que se va a mostrar por debajo del ul que se va a mostrar cuando haya datos disponibles para renderizar
+            lista que se va a ir borrando y actualizando a medida que el evento onkeyup se active, para asi comprobar coincidencias con lo solicitdado y con los datos
+            dentro de OPERARIOS.
+         */
         const ulOperarios = document.getElementById('listaOperarios')
+        const todosLosOperarios = document.getElementById("todosLosOperarios")
 
+
+        /* DATOS YA DEFINIDOS PARA TRABAJAR SOBRE ELLOS. */
         const OPERARIOS = [
             {
                 Nombre: "Matias",
@@ -60,31 +65,41 @@
                 Nombre: "Juan",
                 Legajo: 1,
                 Taquilla: 6
-            }
-
+            },
+            {
+                Nombre: "Cebolla",
+                Legajo: 5,
+                Taquilla: 20
+            },
+            {
+                Nombre: "Soledad",
+                Legajo: 9,
+                Taquilla: 72
+            },
         ]
-
+        
+        
+        /* Constante con todos los elementos li dentro de un array, el cual contiene a cada li que va a ir al <ul> referenciado en todosLosOperarios
+            disponible para listar mediante un listado los elementos dentro de OPERARIOS*/
         const listaOperariosHtml = OPERARIOS.map(operario => {
-            const liElement = document.createElement("li");
-            liElement.textContent = `Nombre: ${operario.Nombre}, Legajo: ${operario.Legajo}, Taquilla: ${operario.Taquilla}`;
+            const liElement = document.createElement("li")
+            liElement.textContent = `Nombre: ${operario.Nombre} Legajo: ${operario.Legajo}, Taquilla: ${operario.Taquilla}`
             liElement.classList.add("operario-item")
             liElement.id = "operario-item"
-            return liElement;
-        });
+            return liElement
+        })
 
-        const todosLosOperarios = document.getElementById("todosLosOperarios")
 
-        //NEW FUNCTION
+        /* Implementacion de funcion para filtrar por taquilla y al encontrar coincidencia devuelve un html en forma de string. teoricamente no podrian haber 2 legajos iguales. */
         function filtrarOperariosPorTaquilla() {
             const inputFiltro = document.getElementById('filtroTaquilla')
             const inputValue = inputFiltro.value
 
-            const empleadoEncontrado = OPERARIOS.find(empleado => empleado.Taquilla === parseInt(inputValue));
-
+            const empleadoEncontrado = OPERARIOS.find(empleado => empleado.Taquilla === parseInt(inputValue))
 
             if (empleadoEncontrado) {
                 ulOperarios.innerHTML = ''
-                console.log("Empleado encontrado:", empleadoEncontrado);
+                console.log("Empleado encontrado:", empleadoEncontrado)
 
                 ulOperarios.innerHTML = `        
                 <li class="operario-item">
@@ -95,25 +110,103 @@
                         <p><span class="keyword">Nombre:</span> ${empleadoEncontrado.Nombre}</p>
                         <p><span class="keyword">Número de Taquilla:</span> ${empleadoEncontrado.Taquilla}</p>
                     </div>
-                </li>`
+                </li>
+                `
             } else {
-                console.log("Empleado no encontrado");
+                console.log("Empleado no encontrado")
             }
         }
 
-        //Funcion para filtrar por nombre-etc
-        function filtrarPorOtrosDatos(){
-            console.log('...')
+
+        /* Filtrado dinamico para varios campos a vez, referido a un solo input. filtra por string asi como para enteros. */
+        function filtrarPorOtrosDatos() {
+            const inputFiltro = document.getElementById('filtroDinamico')
+            const inputValue = inputFiltro.value
+            console.log(inputValue)
+            const empleadosEncontrados = buscarOperario(inputValue, inputValue)
+            try {
+                if (empleadosEncontrados.length > 0) {
+                    ulOperarios.innerHTML = ''
+
+                    empleadosEncontrados.forEach((empleado) => {
+                        /* Aqui teoricamente se trabajan las coincidencias a partir de los filtrados, de manera secuencial se crean los elementos a mostrarse
+                        y son agregados al html correspondiente a la lista que va a mostrar los elementos que estamos buscandome mediante los filtros.
+                        tener en cuenta que es una forma muy secuencial de realizar, borrando y agregando nuevamente informacion. Mucha manipulacion del dom
+                        se tiene en cuenta que la carga de datos no seria muy grande. Podria optimizarme mucho mas para darle mas rentabilidad. Pero como solucion sigue
+                        un fluyo de funcionamiento, filtrado de datos, siempre trabajando sobre la misma lista de operarios y sobre la misma UL, borrando y pintando nuevos
+                        datos a medida que hay un evento de teclado. */
+                        console.log(empleado)
+                        const li = document.createElement("li")
+                        li.className = "operario-item"
+
+                        const divFoto = document.createElement("div")
+                        divFoto.className = "operario-foto"
+
+                        const img = document.createElement("img")
+                        img.src = `fotos/${empleado.Legajo} ${empleado.Nombre}.jpg`
+                        img.alt = `Foto ${empleado.Nombre}`
+
+                        divFoto.appendChild(img)
+
+                        const divInfo = document.createElement("div")
+                        divInfo.className = "operario-info"
+
+                        const pNombre = document.createElement("p")
+                        pNombre.innerHTML = `<span class="keyword">Nombre:</span> ${empleado.Nombre}`
+
+                        const pTaquilla = document.createElement("p")
+                        pTaquilla.innerHTML = `<span class="keyword">Número de Taquilla:</span> ${empleado.Taquilla}`
+
+                        const pLegajo = document.createElement("p")
+                        pLegajo.innerHTML = `<span class="keyword">Número de Legajo:</span> ${empleado.Legajo}`
+
+                        divInfo.appendChild(pNombre)
+                        divInfo.appendChild(pTaquilla)
+                        divInfo.appendChild(pLegajo)
+
+                        li.appendChild(divFoto)
+                        li.appendChild(divInfo)
+
+                        ulOperarios.appendChild(li)
+                    })
+
+                }
+            }
+            catch {console.error('No hay valores para mostrar') }
+
         }
+
+        /* Funcion para buscar operario desde nombre a legajo, la logica ultilizada
+        seria. se reciben los datos del input, independiente de lo que sea, 
+        se filtran los nombres que coincidan con el dato en parametro
+        devuelve la variable coincidencias, la cual se envia a la funcion principal
+        filtrarPorOtrosDatos, la cual se activa cada vez que se hace click en el input correspondiente
+        
+        Se puede optimizar.
+        */
+        function buscarOperario(nombre, legajo) {
+            const coincidencias = OPERARIOS.filter(operario => {
+                const nombreCoincide = operario.Nombre.toLowerCase() === nombre.toLowerCase()
+                const legajoCoincide = operario.Legajo === parseInt(legajo)
+                console.log(nombreCoincide, legajoCoincide)
+                if (nombreCoincide || legajoCoincide) return true
+            })
+            if (coincidencias.length < 1) {
+                return
+            }
+            console.log(coincidencias)
+            return coincidencias
+        }
+
     </script>
-    
+
     <!--Lista extra, muestra todos los datos disponibles. Se recorre la lista de elementos para cada objeto
     y se muestra en listado.  -->
     <ul id="todosLosOperarios">
         <script>
             listaOperariosHtml.forEach(liElement => {
-                todosLosOperarios.appendChild(liElement);
-            });
+                todosLosOperarios.appendChild(liElement)
+            })
         </script>
     </ul>
 
