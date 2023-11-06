@@ -1,0 +1,43 @@
+/* Estilos para el contenedor de la lista */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+
+
+/* Estilos para cada elemento de la lista */
+#listaOperarios .operario-item {
+    display: flex;
+    border: 1px solid #ccc;
+    margin: 10px;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
+}
+
+/* Estilos para la imagen */
+#listaOperarios .operario-foto img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Estilos para la información del operario */
+#listaOperarios.operario-info {
+    flex-grow: 1;
+}
+
+/* Estilos para los párrafos de información */
+#listaOperarios.operario-info p {
+    margin: 5px 0;
+}
+
+/* Estilos para las palabras clave (Nombre, Número de Taquilla, Número de Legajo) */
+#listaOperarios span {
+    font-weight: bold;
+}
+
+
+

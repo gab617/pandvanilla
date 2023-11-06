@@ -21,25 +21,33 @@ h1 {
 
 
 .ul2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
     list-style: none;
     padding: 0;
-    display: flex;
-    flex-direction: row;
+    text-align: start;
 }
 
 
 .ul2 li {
-    border: 1px solid #ccc; /* Borde alrededor de la tarjeta */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra */
+    border: 1px solid #ccc;
+    /* Borde alrededor de la tarjeta */
+    border-radius: 8px;
+    /* Bordes redondeados */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    /* Sombra */
     margin: 10px;
     padding: 20px;
-    background-color: #fff; /* Fondo blanco */
-    transition: transform 0.2s; /* Transición suave al pasar el cursor */
+    background-color: #fff;
+    /* Fondo blanco */
+    transition: transform 0.2s;
+    /* Transición suave al pasar el cursor */
 }
 
-.ul2li:hover {
-    transform: scale(1.05); /* Aumentar tamaño al pasar el cursor */
+.ul2 li:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    /* Aumentar tamaño al pasar el cursor */
 }
 
 label {
@@ -58,3 +66,70 @@ ul {
     padding: 0;
 }
 
+
+/* Estilos para el contenedor de filtros */
+.filtros {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.filtros:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+/* Estilos para las etiquetas de filtro */
+.filtros label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Estilos para los campos de entrada de filtro */
+.filtros input[type="text"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    transition: border-color 0.3s;
+}
+
+.filtros input[type="text"]:focus {
+    border-color: #007bff;
+}
+
+/* Estilos para los campos de entrada durante la interacción */
+.filtros input[type="text"]:hover {
+    border-color: #999;
+}
+
+/* Estilos para los campos de entrada con texto ingresado */
+.filtros input[type="text"]:not(:placeholder-shown) {
+    border-color: #5bc0de;
+}
+
+#NombreImg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#NombreImg img {
+    width: 40%;
+    /* Ajusta el tamaño de la imagen según tu preferencia */
+    height: auto;
+    /* Mantiene la relación de aspecto */
+    /* Espacio entre la imagen y el nombre */
+}
+
+#NombreImg p {
+    text-align: start;
+    /* Alinea el texto a la izquierda (start) */
+    margin: 0;
+    /* Elimina el margen predeterminado del párrafo */
+}

@@ -5,14 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link rel="stylesheet" type="text/css" href="/ul1.css">
+    <link rel="stylesheet" type="text/css" href="/boton-borrar.css">
+    <link rel="stylesheet" type="text/css" href="/ul-filtro.css">
     <title>panda</title>
 </head>
 
 <body class="container">
     <div class="filtros">
         <!-- Filtro de operarios por Nombre, Apellido o Legajo -->
-        <label for="filtroNombre">Filtrar por Nombre, Apellido o Legajo:</label>
+        <label for="filtroNombre">Filtrar por Nombre o Legajo:</label>
         <input type="text" id="filtroDinamico" onkeyup="filtrarPorOtrosDatos()" placeholder="Escribe aquí...">
 
         <!-- Nuevo filtro por Número de Taquilla -->
@@ -30,7 +33,7 @@
         }
     </script>
 
-    <button onclick="borrarFiltros(ulOperarios)">Borrar filtros</button>
+    <button class="boton-borrar" onclick="borrarFiltros(ulOperarios)">Borrar filtros</button>
     <ul id="listaOperarios" class="operarios-list"></ul>
     <ul id="todosLosOperarios" class="ul2"></ul>
 
@@ -38,35 +41,103 @@
         /* DATOS YA DEFINIDOS PARA TRABAJAR SOBRE ELLOS. */
         const OPERARIOS = [
             {
+                Nombre: "Ema",
+                Apellido: "Panda",
+                Legajo: 375,
+                Taquilla: 0,
+                TalleMameluco: "M",
+                TalleZapatos: "42",
+                TalleCampera: "L",
+                Categoria: "Operario",
+                Cuil: "20-12345678-9",
+                Celular: "123-456-789",
+                Email: "ema.panda@example.com",
+                Domicilio: "Calle Ficticia 123"
+            },
+            {
                 Nombre: "Matias",
+                Apellido: "Chubaca",
                 Legajo: 20,
-                Taquilla: 62
+                Taquilla: 62,
+                TalleMameluco: "L",
+                TalleZapatos: "41",
+                TalleCampera: "M",
+                Categoria: "Operario",
+                Cuil: "27-98765432-1",
+                Celular: "987-654-321",
+                Email: "matias.chubaca@example.com",
+                Domicilio: "Otra Calle Ficticia 456"
             },
             {
                 Nombre: "Gabriel",
+                Apellido: "Cabrera",
                 Legajo: 1702,
-                Taquilla: 51
+                Taquilla: 51,
+                TalleMameluco: "XL",
+                TalleZapatos: "43",
+                TalleCampera: "S",
+                Categoria: "Supervisor",
+                Cuil: "23-34567890-7",
+                Celular: "345-678-901",
+                Email: "gabriel.cabrera@example.com",
+                Domicilio: "Avenida Imaginaria 789"
             },
             {
                 Nombre: "Soledad",
+                Apellido: "Dop",
                 Legajo: 3,
-                Taquilla: 69
+                Taquilla: 69,
+                TalleMameluco: "S",
+                TalleZapatos: "38",
+                TalleCampera: "L",
+                Categoria: "Operario",
+                Cuil: "23-12341234-5",
+                Celular: "123-456-789",
+                Email: "soledad.dop@example.com",
+                Domicilio: "Calle de Sueños 567"
             },
             {
                 Nombre: "Juan",
+                Apellido: "Olmos",
                 Legajo: 1,
-                Taquilla: 6
+                Taquilla: 6,
+                TalleMameluco: "M",
+                TalleZapatos: "40",
+                TalleCampera: "XL",
+                Categoria: "Operario",
+                Cuil: "20-56789012-3",
+                Celular: "567-890-123",
+                Email: "juan.olmos@example.com",
+                Domicilio: "Calle Principal 1234"
             },
             {
                 Nombre: "Cebolla",
+                Apellido: "Cebollin",
                 Legajo: 5,
-                Taquilla: 20
+                Taquilla: 20,
+                TalleMameluco: "L",
+                TalleZapatos: "41",
+                TalleCampera: "M",
+                Categoria: "Operario",
+                Cuil: "20-98765432-1",
+                Celular: "987-654-321",
+                Email: "cebolla.cebollin@example.com",
+                Domicilio: "Avenida de los Sueños 456"
             },
             {
                 Nombre: "Soledad",
+                Apellido: "Cabrera",
                 Legajo: 9,
-                Taquilla: 72
-            },
+                Taquilla: 72,
+                TalleMameluco: "S",
+                TalleZapatos: "37",
+                TalleCampera: "M",
+                Categoria: "Operario",
+                Cuil: "27-65432109-8",
+                Celular: "654-321-098",
+                Email: "soledad.cabrera@example.com",
+                Domicilio: "Calle de Fantasía 5678"
+            }
         ]
 
         /* Dos listas donde trabajaremos. de las cuales una va a estar mostrando los datos que se van a filtrar mediante los inputs -ulOperarios-
@@ -75,7 +146,7 @@
             dentro de OPERARIOS.
          */
 
-         /* UL para lista de filtrado y UL para lista de todos los opers */
+        /* UL para lista de filtrado y UL para lista de todos los opers */
         const ulOperarios = document.getElementById('listaOperarios')
         const todosLosOperarios = document.getElementById("todosLosOperarios")
 
@@ -88,11 +159,73 @@
             disponible para listar mediante un listado los elementos dentro de OPERARIOS*/
         const listaOperariosHtml = OPERARIOS.map(operario => {
             const liElement = document.createElement("li")
-            liElement.textContent = `Nombre: ${operario.Nombre} Legajo: ${operario.Legajo}, Taquilla: ${operario.Taquilla}`
             liElement.classList.add("operario-item")
             liElement.id = "operario-item"
+
+            const nombreP = document.createElement("p")
+            nombreP.textContent = `Nombre: ${operario.Nombre}`
+
+            const imagenImg = document.createElement("img")
+            imagenImg.src = "https://gab-cozzuol-react.vercel.app/images/about-us/quienes_somos_mercados01.png"
+            imagenImg.alt = `Imagen de ${operario.Nombre}`
+
+            const divNombreImagen = document.createElement("div")
+            divNombreImagen.id = "NombreImg"
+            divNombreImagen.appendChild(nombreP)
+            divNombreImagen.appendChild(imagenImg)
+
+            const apellidoP = document.createElement("p")
+            apellidoP.textContent = `Apellido: ${operario.Apellido}`
+
+            const legajoP = document.createElement("p")
+            legajoP.textContent = `Legajo: ${operario.Legajo}`
+
+            const taquillaP = document.createElement("p")
+            taquillaP.textContent = `Taquilla: ${operario.Taquilla}`
+
+            // Elementos para campos adicionales
+            const talleMamelucoP = document.createElement("p")
+            talleMamelucoP.textContent = `Talle Mameluco: ${operario.TalleMameluco}`
+
+            const talleZapatosP = document.createElement("p")
+            talleZapatosP.textContent = `Talle Zapatos: ${operario.TalleZapatos}`
+
+            const talleCamperaP = document.createElement("p")
+            talleCamperaP.textContent = `Talle Campera: ${operario.TalleCampera}`
+
+            const categoriaP = document.createElement("p")
+            categoriaP.textContent = `Categoría: ${operario.Categoria}`
+
+            const cuilP = document.createElement("p")
+            cuilP.textContent = `CUIL: ${operario.Cuil}`
+
+            const celularP = document.createElement("p")
+            celularP.textContent = `Celular: ${operario.Celular}`
+
+            const emailP = document.createElement("p")
+            emailP.textContent = `Email: ${operario.Email}`
+
+            const domicilioP = document.createElement("p")
+            domicilioP.textContent = `Domicilio: ${operario.Domicilio}`
+
+            liElement.appendChild(divNombreImagen)
+            liElement.appendChild(apellidoP)
+            liElement.appendChild(legajoP)
+            liElement.appendChild(taquillaP)
+
+            // Agregar elementos para campos adicionales
+            liElement.appendChild(talleMamelucoP)
+            liElement.appendChild(talleZapatosP)
+            liElement.appendChild(talleCamperaP)
+            liElement.appendChild(categoriaP)
+            liElement.appendChild(cuilP)
+            liElement.appendChild(celularP)
+            liElement.appendChild(emailP)
+            liElement.appendChild(domicilioP)
+
             return liElement
         })
+
 
 
         /* Implementacion de funcion para filtrar por taquilla y al encontrar coincidencia devuelve un html en forma de string. teoricamente no podrian haber 2 legajos iguales. */
