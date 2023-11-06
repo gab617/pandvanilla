@@ -35,15 +35,6 @@
     <ul id="todosLosOperarios" class="ul2"></ul>
 
     <script>
-        /* Dos listas donde trabajaremos. de las cuales una va a estar mostrando los datos que se van a filtrar mediante los inputs -ulOperarios-
-            y la segunda lista ul -todosLosOperarios- que se va a mostrar por debajo del ul que se va a mostrar cuando haya datos disponibles para renderizar
-            lista que se va a ir borrando y actualizando a medida que el evento onkeyup se active, para asi comprobar coincidencias con lo solicitdado y con los datos
-            dentro de OPERARIOS.
-         */
-        const ulOperarios = document.getElementById('listaOperarios')
-        const todosLosOperarios = document.getElementById("todosLosOperarios")
-
-
         /* DATOS YA DEFINIDOS PARA TRABAJAR SOBRE ELLOS. */
         const OPERARIOS = [
             {
@@ -77,8 +68,22 @@
                 Taquilla: 72
             },
         ]
-        
-        
+
+        /* Dos listas donde trabajaremos. de las cuales una va a estar mostrando los datos que se van a filtrar mediante los inputs -ulOperarios-
+            y la segunda lista ul -todosLosOperarios- que se va a mostrar por debajo del ul que se va a mostrar cuando haya datos disponibles para renderizar
+            lista que se va a ir borrando y actualizando a medida que el evento onkeyup se active, para asi comprobar coincidencias con lo solicitdado y con los datos
+            dentro de OPERARIOS.
+         */
+
+         /* UL para lista de filtrado y UL para lista de todos los opers */
+        const ulOperarios = document.getElementById('listaOperarios')
+        const todosLosOperarios = document.getElementById("todosLosOperarios")
+
+        /* Inputs de filtrado */
+        const inputFiltroDinamico = document.getElementById('filtroDinamico')
+        const inputFiltroTaquilla = document.getElementById('filtroTaquilla')
+
+
         /* Constante con todos los elementos li dentro de un array, el cual contiene a cada li que va a ir al <ul> referenciado en todosLosOperarios
             disponible para listar mediante un listado los elementos dentro de OPERARIOS*/
         const listaOperariosHtml = OPERARIOS.map(operario => {
@@ -92,10 +97,9 @@
 
         /* Implementacion de funcion para filtrar por taquilla y al encontrar coincidencia devuelve un html en forma de string. teoricamente no podrian haber 2 legajos iguales. */
         function filtrarOperariosPorTaquilla() {
-            const inputFiltro = document.getElementById('filtroTaquilla')
-            const inputValue = inputFiltro.value
+            const inputFiltroValue = inputFiltroTaquilla.value
 
-            const empleadoEncontrado = OPERARIOS.find(empleado => empleado.Taquilla === parseInt(inputValue))
+            const empleadoEncontrado = OPERARIOS.find(empleado => empleado.Taquilla === parseInt(inputFiltroValue))
 
             if (empleadoEncontrado) {
                 ulOperarios.innerHTML = ''
@@ -120,13 +124,13 @@
 
         /* Filtrado dinamico para varios campos a vez, referido a un solo input. filtra por string asi como para enteros. */
         function filtrarPorOtrosDatos() {
-            const inputFiltro = document.getElementById('filtroDinamico')
-            const inputValue = inputFiltro.value
-            console.log(inputValue)
-            const empleadosEncontrados = buscarOperario(inputValue, inputValue)
+            const inputFiltroDinamico = document.getElementById('filtroDinamico')
+            const inputFiltroValue = inputFiltroDinamico.value
+            console.log(inputFiltroValue)
+            const empleadosEncontrados = buscarOperario(inputFiltroValue, inputFiltroValue)
             try {
                 if (empleadosEncontrados.length > 0) {
-                    ulOperarios.innerHTML = ''
+                    ulOperarios.innerHTML = '' /* Se borra el contenido cuando se encuentra nuevas coincidencias antes de renderizarlos. */
 
                     empleadosEncontrados.forEach((empleado) => {
                         /* Aqui teoricamente se trabajan las coincidencias a partir de los filtrados, de manera secuencial se crean los elementos a mostrarse
@@ -136,7 +140,7 @@
                         un fluyo de funcionamiento, filtrado de datos, siempre trabajando sobre la misma lista de operarios y sobre la misma UL, borrando y pintando nuevos
                         datos a medida que hay un evento de teclado. */
                         console.log(empleado)
-                        const li = document.createElement("li")
+                        const li = document.createElement("li") /* maquetacion desde creacion de elementos */
                         li.className = "operario-item"
 
                         const divFoto = document.createElement("div")
@@ -172,7 +176,7 @@
 
                 }
             }
-            catch {console.error('No hay valores para mostrar') }
+            catch { console.log('No hay valores para mostrar') }
 
         }
 
@@ -188,8 +192,10 @@
             const coincidencias = OPERARIOS.filter(operario => {
                 const nombreCoincide = operario.Nombre.toLowerCase() === nombre.toLowerCase()
                 const legajoCoincide = operario.Legajo === parseInt(legajo)
-                console.log(nombreCoincide, legajoCoincide)
-                if (nombreCoincide || legajoCoincide) return true
+                if (nombreCoincide || legajoCoincide) {
+                    console.log('operario encontrado')
+                    return true
+                }
             })
             if (coincidencias.length < 1) {
                 return
